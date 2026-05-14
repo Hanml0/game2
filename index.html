@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>恋爱冲动槽 · 最终版</title>
+
+<style>
+body {
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC");
+    padding: 20px;
+    text-align: center;
+}
+.container {
+    max-width: 420px;
+    margin: auto;
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.1);
+}
+h1 { color: #e91e63; margin-bottom: 10px; }
+
+/* 开始页 */
+#startPage { text-align: left; }
+.rule { margin-bottom: 10px; line-height: 1.6; }
+
+/* 能量槽 */
+.energy-area { display: flex; justify-content: space-between; margin: 20px 0; }
+.energy-box { width: 48%; }
+.name { font-size: 14px; margin-bottom: 5px; font-weight: bold; }
+.bar-bg { background: #eee; border-radius: 20px; height: 25px; overflow: hidden; }
+.bar { height: 100%; width: 0%; transition: width 0.5s ease; }
+#barA { background: linear-gradient(90deg, #ff80ab, #e91e63); }
+#barB { background: linear-gradient(90deg, #64b5f6, #1976d2); }
+
+#turn { margin-top: 15px; font-size: 16px; color: #555; }
+
+.btn-row { display: flex; gap: 10px; margin-top: 15px; }
+.btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.btn-truth { background: #f48fb1; color: #fff; }
+.btn-dare { background: #f06292; color: #fff; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+#card {
+    background: #fdf2f7;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 15px;
+    display: none;
+    text-align: left;
+}
+#card.show { display: block; }
+
+/* Ban 页面 */
+#banPage { display: none; text-align: left; }
+.ban-title { font-weight: bold; margin-bottom: 10px; color: #e91e63; }
+.ban-counter { font-size: 14px; margin-bottom: 10px; color: #888; }
+.ban-list { max-height: 300px; overflow-y: auto; border: 1px solid #eee; border-radius: 10px; padding: 10px; }
+.ban-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+.ban-item input { margin-right: 8px; margin-top: 3px; flex-shrink: 0; }
+.ban-text { word-break: break-all; }
+
+/* 答题操作按钮 */
+.action-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+.action-btn {
+    flex: 1 1 calc(50% - 8px);
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.btn-refuse { background: #ef5350; color: #fff; }
+.btn-reroll { background: #ffca28; color: #333; }
+.btn-invite { background: #66bb6a; color: #fff; }
+.btn-done { background: #e91e63; color: #fff; }
+
+/* 结果页 */
+#resultPage { display: none; text-align: left; }
+.result-section { margin-top: 20px; background: #fce4ec; border-radius: 12px; padding: 15px; }
+.record-item { font-size: 14px; margin-bottom: 6px; }
+</style>
+</head>
+
+<body>
+
+<!-- 开始页 -->
+<div class="container" id="startPage">
+    <h1>⚡ 恋爱冲动槽</h1>
+    <div class="rule">
+        <strong>📖 游戏规则说明</strong>
+        <ol>
+            <li><strong>Ban 题阶段（共享配额）：</strong>
+                <ul>
+                    <li>真心话：共 50 道，<strong>小韩先 Ban</strong>，小王后 Ban</li>
+                    <li>大冒险：共 50 道，<strong>小王先 Ban</strong>，小韩后 Ban</li>
+                    <li>后 Ban 的人只能 Ban 剩余额度</li>
+                </ul>
+            </li>
+            <li><strong>分级题库：</strong>400 道真实情侣题，按难度分级，对应不同能量值。</li>
+            <li><strong>答题决策：</strong>抽题后必须完成以下操作之一：
+                <ul>
+                    <li>❌ 拒绝作答（-5%）</li>
+                    <li>🔄 重新抽题（不扣分）</li>
+                    <li>🙋 邀请对方作答（你得分，对方代答，限 2 次）</li>
+                    <li>✅ 完成作答（正常加分）</li>
+                </ul>
+            </li>
+            <li><strong>状态锁：</strong>未完成当前题目的操作前，无法再次点击「真心话 / 大冒险」。</li>
+        </ol>
+    </div>
+    <button class="btn btn-truth" style="margin-top:15px;" onclick="showBanPage()">🚫 赛前 Ban 题</button>
+    <button class="btn btn-dare" style="margin-top:10px;" onclick="startGame()">🎯 直接开始游戏</button>
+</div>
+
+<!-- Ban 页面 -->
+<div class="container" id="banPage">
+    <h1>🚫 赛前 Ban 题</h1>
+    <div class="ban-title" id="banTurn"></div>
+    <div class="ban-counter" id="banCounter"></div>
+    <div class="ban-list" id="banList"></div>
+    <button class="btn btn-dare" style="margin-top:15px;" onclick="finishBan()">✅ 确认 Ban 题并进入游戏</button>
+</div>
+
+<!-- 游戏页 -->
+<div class="container" id="gamePage" style="display:none;">
+    <h1>⚡ 恋爱冲动槽</h1>
+    <div class="energy-area">
+        <div class="energy-box"><div class="name">小王</div><div class="bar-bg"><div class="bar" id="barA"></div></div></div>
+        <div class="energy-box"><div class="name">小韩</div><div class="bar-bg"><div class="bar" id="barB"></div></div></div>
+    </div>
+    <div id="turn">当前回合：小王</div>
+    <div class="btn-row">
+        <button class="btn btn-truth" id="btnTruth" onclick="draw('truth')">💬 真心话</button>
+        <button class="btn btn-dare" id="btnDare" onclick="draw('dare')">🏃 大冒险</button>
+    </div>
+    <div id="card">
+        <div id="cardTitle"></div>
+        <div id="cardContent"></div>
+        <div class="action-row" id="actionRow"></div>
+    </div>
+</div>
+
+<!-- 结果页 -->
+<div class="container" id="resultPage">
+    <h1 id="winnerText"></h1>
+    <div class="result-section"><div class="result-title">👦 小王的答题记录</div><div id="recordA"></div></div>
+    <div class="result-section"><div class="result-title">👧 小韩的答题记录</div><div id="recordB"></div></div>
+    <button class="btn btn-truth" style="margin-top:20px;" onclick="restart()">🔄 再来一局</button>
+</div>
+
+<script>
+/* =========================================================
+   📚 400 道终极题库（已分级）
+   ========================================================= */
+
+const truthPool = [
+    // L1 (+5)
+    { text: "你手机里我的备注是什么？", value: 5 },
+    { text: "我今天的衣服搭配好看吗？", value: 5 },
+    { text: "如果我是动物，你觉得我像什么？", value: 5 },
+    { text: "你最喜欢我身上的哪种味道？", value: 5 },
+    { text: "最近一次觉得我可爱是因为什么？", value: 5 },
+    { text: "我们现在的状态让你联想到哪种甜点？", value: 5 },
+    { text: "我睡觉的样子安静吗？", value: 5 },
+    { text: "你最喜欢我哪个表情？", value: 5 },
+    { text: "如果我是天气，你觉得我是晴天还是雨天？", value: 5 },
+    { text: "今天见面我做的哪件事让你开心了？", value: 5 },
+    { text: "你最喜欢我穿什么颜色的衣服？", value: 5 },
+    { text: "我哪次化妆/打扮让你印象最深？", value: 5 },
+    { text: "你手机里存的我最好看的照片是哪张？", value: 5 },
+    { text: "你觉得我的声音好听吗？", value: 5 },
+    { text: "我们第一次见面时我穿了什么颜色的衣服？", value: 5 },
+    { text: "你朋友圈里关于我的第一条动态是什么？", value: 5 },
+    { text: "你觉得我最近胖了吗？", value: 5 },
+    { text: "我有没有说过什么让你觉得很萌的话？", value: 5 },
+    { text: "你最喜欢我哪个小习惯？", value: 5 },
+    { text: "如果我是花，你觉得我是什么花？", value: 5 },
+    { text: "你觉得我更像爸爸还是更像妈妈？", value: 5 },
+    { text: "我有没有什么口头禅？", value: 5 },
+    { text: "你最喜欢我哪个身体部位？", value: 5 },
+    { text: "你觉得我的笑声好听吗？", value: 5 },
+    { text: "我哪次吃饭的样子让你觉得很有趣？", value: 5 },
+    { text: "你第一次觉得我“很居家”是在什么时候？", value: 5 },
+    { text: "你觉得我适合留长发还是短发？", value: 5 },
+    { text: "我最近有没有什么让你担心的小毛病？", value: 5 },
+    { text: "你觉得我的性格像哪个季节？", value: 5 },
+    { text: "如果给我起一个外号，你会叫什么？", value: 5 },
+    { text: "你最喜欢我们一起做的哪件家务？", value: 5 },
+    { text: "我哪次吃零食的样子很可爱？", value: 5 },
+    { text: "你觉得我最近压力大吗？", value: 5 },
+    { text: "你最喜欢我发的哪条朋友圈？", value: 5 },
+    { text: "你觉得我的手好看吗？", value: 5 },
+    { text: "我们之间最像“老夫老妻”的时刻是什么？", value: 5 },
+    { text: "你最喜欢我哪种撒娇方式？", value: 5 },
+    { text: "如果我是颜色，你觉得我是什么色？", value: 5 },
+    { text: "你觉得我的逻辑能力强吗？", value: 5 },
+    { text: "我哪次赖床的样子让你觉得好笑？", value: 5 },
+    { text: "你觉得我的性格里有“强迫症”吗？", value: 5 },
+    { text: "你最喜欢我哪个瞬间？", value: 5 },
+    { text: "如果我是电影，你希望是哪一部？", value: 5 },
+    { text: "你觉得我更像小说里的哪个角色？", value: 5 },
+    { text: "我哪次喝醉/微醺的样子让你难忘？", value: 5 },
+    { text: "你觉得我的生日礼物通常送得合格吗？", value: 5 },
+    { text: "你最喜欢我们一起去的哪家餐厅？", value: 5 },
+    { text: "你觉得我的厨艺怎么样？", value: 5 },
+    { text: "我哪次洗碗/做家务的样子很帅？", value: 5 },
+    { text: "你觉得我的字迹好看吗？", value: 5 },
+    { text: "你最喜欢我哪种笑容？", value: 5 },
+    { text: "如果我是书，你觉得书名应该是什么？", value: 5 },
+    { text: "你觉得我最近有什么让你骄傲的事吗？", value: 5 },
+    { text: "我有没有什么一直坚持的小爱好？", value: 5 },
+    { text: "你最喜欢我送你的哪件礼物？", value: 5 },
+    { text: "你觉得我的直觉准吗？", value: 5 },
+    { text: "我有没有什么让你觉得“很我”的小动作？", value: 5 },
+    { text: "你最喜欢我哪个周末的安排？", value: 5 },
+    { text: "你觉得我的性格里有你需要学习的地方吗？", value: 5 },
+    { text: "如果我是游戏，你觉得我是什么类型的？", value: 5 },
+    { text: "你觉得我的存在让你感到安全吗？", value: 5 },
+    { text: "我哪次走路的样子很可爱？", value: 5 },
+    { text: "你觉得我的睡眠质量怎么样？", value: 5 },
+    { text: "你最喜欢我哪种情绪表达？", value: 5 },
+    { text: "如果我是音乐流派，你觉得我是什么？", value: 5 },
+    { text: "你觉得我的观察力敏锐吗？", value: 5 },
+    { text: "我有没有什么奇怪的梦话？", value: 5 },
+    { text: "你觉得我最近开心吗？", value: 5 },
+    { text: "你最喜欢我哪个发型？", value: 5 },
+    { text: "如果我是城市，你觉得我是哪里？", value: 5 },
+    { text: "你最喜欢我哪种穿搭风格？", value: 5 },
+    { text: "如果我是饮料，你觉得我是什么口味？", value: 5 },
+    { text: "你觉得我最近有什么让你惊喜的变化吗？", value: 5 },
+    { text: "你最喜欢我哪个小动作？", value: 5 },
+    { text: "你觉得我最近有什么进步？", value: 5 },
+    { text: "如果我是云朵，你希望我是什么形状？", value: 5 },
+    { text: "你觉得我适合当猫还是狗？", value: 5 },
+    { text: "我哪次傻笑让你觉得很治愈？", value: 5 },
+    { text: "你觉得我的眼神温柔吗？", value: 5 },
+    { text: "你最喜欢我哪种香水/沐浴露的味道？", value: 5 },
+    // L2 (+10)
+    { text: "你第一次对我心动是因为哪一刻？", value: 10 },
+    { text: "说出三个我最让你心动的小细节。", value: 10 },
+    { text: "你最欣赏我身上的哪种品质？", value: 10 },
+    { text: "我们第一次牵手时你在想什么？", value: 10 },
+    { text: "你最想和我一起去旅行的三个地方是哪里？", value: 10 },
+    { text: "你觉得我现在最让你放心不下的习惯是什么？", value: 10 },
+    { text: "你有没有偷偷想过我们的未来（比如几年后）？", value: 10 },
+    { text: "你最想收到我送的什么礼物？", value: 10 },
+    { text: "如果我们可以互换身份一天，你最想体验什么？", value: 10 },
+    { text: "你最不能容忍的伴侣缺点是什么？", value: 10 },
+    { text: "你觉得我们俩谁更爱吃醋？", value: 10 },
+    { text: "你记忆中最深刻的一次约会是因为什么？", value: 10 },
+    { text: "你最想和我一起写的书是什么题材？", value: 10 },
+    { text: "你觉得我最近有什么变化？", value: 10 },
+    { text: "你最想和我一起看的电影是哪部？", value: 10 },
+    { text: "你最近一次感到幸福是因为什么？", value: 10 },
+    { text: "你最想和我一起看的日落/日出在哪里？", value: 10 },
+    { text: "你觉得我最近对你最好的一件事是什么？", value: 10 },
+    { text: "你最想和我一起学的技能是什么？", value: 10 },
+    { text: "你第一次觉得我是真爱是在什么时候？", value: 10 },
+    { text: "你最想和我一起看的演唱会是谁的？", value: 10 },
+    { text: "你觉得我最近最辛苦的一件事是什么？", value: 10 },
+    { text: "你最想和我一起做的公益活动是什么？", value: 10 },
+    { text: "你觉得我最近有什么进步？", value: 10 },
+    { text: "你最想和我一起拼的乐高是什么？", value: 10 },
+    { text: "你最近一次觉得我成熟了是因为什么？", value: 10 },
+    { text: "你最想和我一起做的甜点是什么？", value: 10 },
+    { text: "你第一次觉得我幼稚是在什么时候？", value: 10 },
+    { text: "你最想和我一起去的博物馆是哪个？", value: 10 },
+    { text: "你第一次觉得我是灵魂伴侣是在什么时候？", value: 10 },
+    { text: "你最想和我一起写的信是写给谁的？", value: 10 },
+    { text: "你觉得我最近最让你心疼的一件事是什么？", value: 10 },
+    { text: "你最想和我一起做的手工是什么？", value: 10 },
+    { text: "你觉得我最近最像一个什么职业？", value: 10 },
+    { text: "你最想和我一起玩的游戏是什么？", value: 10 },
+    { text: "你觉得我打呼噜吗？", value: 10 },
+    { text: "你最想和我一起看的星星在哪里？", value: 10 },
+    { text: "你最近一次想我是因为什么？", value: 10 },
+    { text: "你最想和我一起设计的纹身是什么？", value: 10 },
+    { text: "你觉得我最近胖了吗？（严肃版）", value: 10 },
+    { text: "你最想和我一起去的游乐园项目是什么？", value: 10 },
+    { text: "你第一次为我流泪是因为什么？", value: 10 },
+    { text: "你最想和我一起做的家务是什么？", value: 10 },
+    { text: "你觉得我生气时最可怕的是什么？", value: 10 },
+    { text: "你最想和我一起过的节日是哪个？", value: 10 },
+    { text: "你第一次为我做饭是什么时候？", value: 10 },
+    { text: "你觉得我身上有什么让你安心的味道？", value: 10 },
+    { text: "你最想和我一起拍的一组照片主题是什么？", value: 10 },
+    { text: "你最近一次心动是因为看到了什么？", value: 10 },
+    { text: "你觉得我睡觉的样子可爱吗？（深夜版）", value: 10 },
+    { text: "你最想和我一起尝试的美食是什么？", value: 10 },
+    { text: "你有没有想过如果我们异地恋怎么办？", value: 10 },
+    { text: "你最想和我一起参加的活动是什么？", value: 10 },
+    { text: "你觉得我最大的魅力是什么？", value: 10 },
+    { text: "你第一次给我买礼物是什么？", value: 10 },
+    { text: "你最想和我一起做的疯狂小事是什么？", value: 10 },
+    { text: "你觉得我们的爱情保鲜秘诀是什么？", value: 10 },
+    { text: "你最想带我去见谁？", value: 10 },
+    { text: "你觉得我像哪种小动物？（深入版）", value: 10 },
+    { text: "你最想和我一起过的纪念日怎么过？", value: 10 },
+    // L3 (+15)
+    { text: "你第一次产生想和对方结婚的念头是在什么时候？", value: 15 },
+    { text: "你觉得我们之间最灵魂契合的一件事是什么？", value: 15 },
+    { text: "你最近一次因为我哭/笑是因为什么？", value: 15 },
+    { text: "你最害怕失去我什么？", value: 15 },
+    { text: "你理想中的家是什么样子的？", value: 15 },
+    { text: "你最想和我一起养的宠物是什么？", value: 15 },
+    { text: "你最想听我对你说的一句话是什么？", value: 15 },
+    { text: "你第一次见我家长时紧张吗？", value: 15 },
+    { text: "你记忆中最深刻的一次吵架是因为什么？", value: 15 },
+    { text: "你觉得我最近有什么坏习惯？", value: 15 },
+    { text: "你最想让我为你改变的一个习惯是什么？", value: 15 },
+    { text: "你理想中的婚姻生活是什么样的？", value: 15 },
+    { text: "你最近一次觉得“有我就够了”是在什么时候？", value: 15 },
+    { text: "你觉得我们之间最大的信任危机是什么？", value: 15 },
+    { text: "你最想和我一起完成的人生清单是什么？", value: 15 },
+    { text: "你最想和我一起养的孩子叫什么名字？", value: 15 },
+    { text: "你最想和我一起看的舞台剧是哪部？", value: 15 },
+    { text: "你觉得我最近最让你骄傲的一件事是什么？", value: 15 },
+    { text: "你最想和我一起做的周末计划是什么？", value: 15 },
+    { text: "你觉得我最近最让你觉得被理解的一件事是什么？", value: 15 },
+    { text: "你最想和我一起去的露营地是哪里？", value: 15 },
+    { text: "你第一次觉得我是命中注定是在什么时候？", value: 15 },
+    { text: "你最想和我一起做的早餐是什么？", value: 15 },
+    { text: "你觉得我最近最让你感动的一句歌词是什么？", value: 15 },
+    { text: "你最想和我一起做的午餐便当是什么？", value: 15 },
+    { text: "你觉得我最近最像一个什么颜色？", value: 15 },
+    { text: "你最想和我一起看的烟花在哪里？", value: 15 },
+    { text: "你觉得我最近最让你觉得被珍惜的一件事是什么？", value: 15 },
+    { text: "你最想和我一起去的古镇是哪里？", value: 15 },
+    { text: "你第一次觉得我很浪漫是在什么时候？", value: 15 },
+    { text: "你最想和我一起做的情侣口罩是什么图案？", value: 15 },
+    { text: "你觉得我最近最让你觉得被宠爱的一件事是什么？", value: 15 },
+    { text: "你最想和我一起去的雪场是哪里？", value: 15 },
+    { text: "你第一次觉得我很性感是在什么时候？", value: 15 },
+    { text: "你最想和我一起做的情侣围巾是什么织法？", value: 15 },
+    { text: "你觉得我最近最让你觉得被呵护的一件事是什么？", value: 15 },
+    { text: "你最想和我一起去的沙漠是哪里？", value: 15 },
+    { text: "你第一次觉得我很居家是在什么时候？", value: 15 },
+    { text: "你最想和我一起做的情侣袜是什么图案？", value: 15 },
+    { text: "你觉得我最近最让你觉得被包容的一件事是什么？", value: 15 },
+    // L4 (+20 / -10)
+    { text: "如果我们要分手，你觉得最可能的原因是什么？", value: -10 },
+    { text: "你有没有哪一刻觉得我们并不合适？", value: -10 },
+    { text: "你有没有什么事情是对我撒谎过的？", value: -10 },
+    { text: "你最想和我一起写的书是什么题材？", value: 20 },
+    { text: "你觉得我最近最让你心疼的一件事是什么？", value: 20 },
+    { text: "你有没有哪一刻觉得我并不爱你了？", value: -10 },
+    { text: "你最想让我为你改变的一个习惯是什么？", value: 20 },
+    { text: "你第一次为我流泪是因为什么？", value: 20 },
+    { text: "你觉得我们现在的状态像极了哪部电影？", value: 20 },
+    { text: "你有没有偷偷拿我和前任做过比较？", value: -10 },
+    { text: "如果我可以看透你心里的一个秘密，你希望我看哪个？", value: 20 },
+    { text: "你觉得我们之间最大的问题是什么？", value: -10 },
+    { text: "你有没有哪一刻想过放弃我？", value: -10 },
+    { text: "你最想和我一起完成的遗愿清单是什么？", value: 20 },
+    { text: "你觉得我最近最让你失望的一件事是什么？", value: -10 },
+    { text: "如果生命只剩一年，你最想和我做的一件事是什么？", value: 20 },
+    { text: "你最想和我一起去的岛屿是哪里？", value: 20 },
+    { text: "你第一次觉得我很真实是在什么时候？", value: 20 },
+    { text: "你觉得我最近最让你觉得被看见的一件事是什么？", value: 20 },
+    { text: "你最近一次因为我们的关系感到不安是因为什么？", value: -10 }
+];
+
+const darePool = [
+    // L1 (+5)
+    { text: "给对方一个长达5秒的对视。", value: 5 },
+    { text: "用撒娇的语气说一句“我好喜欢你”。", value: 5 },
+    { text: "模仿对方平时最爱做的一个小动作。", value: 5 },
+    { text: "给对方一个额头吻。", value: 5 },
+    { text: "接下来的3分钟，只能用叠词交流。", value: 5 },
+    { text: "给对方一个大大的拥抱。", value: 5 },
+    { text: "学一种小动物叫，直到对方笑场。", value: 5 },
+    { text: "用手机备忘录画一幅对方的简笔画。", value: 5 },
+    { text: "给对方唱一句情歌。", value: 5 },
+    { text: "接下来的5分钟，要把对方当成国王/女王侍奉。", value: 5 },
+    { text: "轻轻捏一下对方的脸。", value: 5 },
+    { text: "用你的小拇指勾住对方的小拇指10秒。", value: 5 },
+    { text: "给对方整理一下衣领。", value: 5 },
+    { text: "夸奖对方三句不同的话。", value: 5 },
+    { text: "用三种不同的语气说“晚安”。", value: 5 },
+    { text: "给对方倒一杯水。", value: 5 },
+    { text: "帮对方把散落的头发别到耳后。", value: 5 },
+    { text: "接下来的5分钟，不许说“不”。", value: 5 },
+    { text: "模仿对方最喜欢的表情包。", value: 5 },
+    { text: "给对方发一个你最喜欢的表情包。", value: 5 },
+    { text: "轻轻碰一下对方的鼻尖。", value: 5 },
+    { text: "帮对方按摩一下手腕。", value: 5 },
+    { text: "用脸颊贴一下对方的手背。", value: 5 },
+    { text: "接下来的3分钟，走路要同手同脚。", value: 5 },
+    { text: "给对方起一个可爱的昵称并叫一声。", value: 5 },
+    { text: "原地转3圈然后抱住对方。", value: 5 },
+    { text: "帮对方吹一下手指（假装受伤）。", value: 5 },
+    { text: "用嘴叼着一张纸巾递给对方。", value: 5 },
+    { text: "接下来的5分钟，说话要带“喵”字。", value: 5 },
+    { text: "给对方一个“公主抱”的姿势（哪怕抱不动）。", value: 5 },
+    { text: "帮对方拍一张好看的照片。", value: 5 },
+    { text: "用脚轻轻碰一下对方的脚。", value: 5 },
+    { text: "给对方唱一首儿歌。", value: 5 },
+    { text: "接下来的5分钟，要像服务员一样对对方说话。", value: 5 },
+    { text: "轻轻咬一下对方的耳朵（轻一点）。", value: 5 },
+    { text: "帮对方把鞋子脱了。", value: 5 },
+    { text: "用你的额头抵住对方的额头。", value: 5 },
+    { text: "接下来的3分钟，要看着对方的眼睛说话。", value: 5 },
+    { text: "给对方一个“摸头杀”。", value: 5 },
+    { text: "帮对方拿一下手机/水杯。", value: 5 },
+    { text: "用你的手包住对方的手。", value: 5 },
+    { text: "接下来的5分钟，不许说脏话。", value: 5 },
+    { text: "模仿对方走路的样子。", value: 5 },
+    { text: "给对方一个飞吻。", value: 5 },
+    { text: "帮对方把背后的衣服拉平整。", value: 5 },
+    { text: "用三种不同的方言说“你好”。", value: 5 },
+    { text: "接下来的5分钟，要像猫咪一样走路。", value: 5 },
+    { text: "给对方一个“壁咚”的姿势。", value: 5 },
+    { text: "帮对方把脸上的碎发拨开。", value: 5 },
+    { text: "用你的手给对方的眼睛遮光。", value: 5 },
+    { text: "接下来的3分钟，要像树懒一样慢动作说话。", value: 5 },
+    { text: "给对方一个“熊抱”。", value: 5 },
+    { text: "帮对方把外套穿上。", value: 5 },
+    { text: "用你的手指在对方手心画一个圈。", value: 5 },
+    { text: "接下来的5分钟，说话要押韵。", value: 5 },
+    { text: "给对方一个“公主抱”的姿势（哪怕抱不动）。", value: 5 },
+    { text: "帮对方把鞋带系好。", value: 5 },
+    { text: "用你的脸蹭一下对方的脸颊。", value: 5 },
+    { text: "接下来的5分钟，不许玩手机。", value: 5 },
+    { text: "给对方一个“回眸一笑”。", value: 5 },
+    { text: "帮对方把眼镜摘下来。", value: 5 },
+    { text: "用你的手给对方的耳朵保暖。", value: 5 },
+    { text: "接下来的3分钟，要像机器人一样说话。", value: 5 },
+    { text: "给对方一个“摸头杀”。", value: 5 },
+    { text: "帮对方把头发理顺。", value: 5 },
+    { text: "用你的手指在对方背上画一条直线。", value: 5 },
+    { text: "接下来的5分钟，要像小孩子一样说话。", value: 5 },
+    { text: "给对方一个“举高高”的姿势。", value: 5 },
+    { text: "帮对方把袖子卷起来。", value: 5 },
+    { text: "用你的嘴唇碰一下对方的手背。", value: 5 },
+    { text: "接下来的5分钟，要像霸道总裁一样说话。", value: 5 },
+    { text: "给对方一个“摸头杀”。", value: 5 },
+    { text: "帮对方把指甲剪了（假动作）。", value: 5 },
+    { text: "用你的手指在对方手臂上画一个小星星。", value: 5 },
+    { text: "接下来的3分钟，要像外国人一样说话。", value: 5 },
+    { text: "给对方一个“摸头杀”。", value: 5 },
+    { text: "帮对方把围巾围好。", value: 5 },
+    { text: "用你的手给对方的脸取暖。", value: 5 },
+    { text: "接下来的5分钟，要像老爷爷/老奶奶一样说话。", value: 5 },
+    { text: "给对方一个“摸头杀”。", value: 5 },
+    // L2 (+10)
+    { text: "闭上眼睛，让对方喂你吃一口食物。", value: 10 },
+    { text: "发一条朋友圈夸赞对方，并配一张对方的丑照。", value: 10 },
+    { text: "用你的额头撞一下对方的额头，并说“波波”。", value: 10 },
+    { text: "让对方在你手背上画一个爱心。", value: 10 },
+    { text: "原地转5圈，然后去亲对方一下。", value: 10 },
+    { text: "让对方给你起一个奇怪的昵称，并叫对方一声。", value: 10 },
+    { text: "做一个鬼脸，让对方拍照留念。", value: 10 },
+    { text: "用脚夹住一支笔，并尝试写字。", value: 10 },
+    { text: "让对方给你编一个花环戴在头上。", value: 10 },
+    { text: "接下来的5分钟，走路必须同手同脚。", value: 10 },
+    { text: "让对方在你脸上画一个小胡子（可水洗笔）。", value: 10 },
+    { text: "用屁股扭出一个爱心形状。", value: 10 },
+    { text: "模仿一个你讨厌的明星。", value: 10 },
+    { text: "给对方按摩肩膀3分钟。", value: 10 },
+    { text: "用三种不同的方言说“我爱你”。", value: 10 },
+    { text: "让对方捏你的脸，直到你喊停。", value: 10 },
+    { text: "做一个高难度的瑜伽动作（量力而行）。", value: 10 },
+    { text: "让对方给你讲一个冷笑话，你不能笑。", value: 10 },
+    { text: "用嘴叼着纸巾，递给对方。", value: 10 },
+    { text: "接下来的10分钟，不能说谎。", value: 10 },
+    { text: "让对方给你涂口红（或润唇膏）。", value: 10 },
+    { text: "原地蛙跳5下。", value: 10 },
+    { text: "用鼻子嗅对方的手腕，并说出闻到的味道。", value: 10 },
+    { text: "让对方在你背上画一幅画，猜猜是什么。", value: 10 },
+    { text: "接下来的5分钟，只能点头或摇头回答问题。", value: 10 },
+    { text: "用肚子顶着一个气球，走到房间的另一端。", value: 10 },
+    { text: "让对方给你系鞋带。", value: 10 },
+    { text: "做一个俯卧撑（或平板支撑10秒）。", value: 10 },
+    { text: "用舌头抵住上颚，说一句绕口令。", value: 10 },
+    { text: "让对方给你剥一个水果吃。", value: 10 },
+    { text: "接下来的3分钟，不能眨眼。", value: 10 },
+    { text: "用脚趾夹住遥控器换台。", value: 10 },
+    { text: "让对方给你画一个络腮胡。", value: 10 },
+    { text: "学大猩猩捶胸顿足5次。", value: 10 },
+    { text: "用最严肃的表情说一句最肉麻的话。", value: 10 },
+    { text: "让对方给你吹头发。", value: 10 },
+    { text: "原地金鸡独立30秒。", value: 10 },
+    { text: "用脸颊夹住一张纸，坚持1分钟。", value: 10 },
+    { text: "让对方给你戴上一个奇怪的发饰。", value: 10 },
+    { text: "学猫叫叫醒对方。", value: 10 },
+    { text: "用嘴叼着一朵花，送给对方。", value: 10 },
+    { text: "让对方给你挠痒痒，直到你说停。", value: 10 },
+    { text: "做一个托马斯全旋（做不到就转圈）。", value: 10 },
+    { text: "用脸颊顶住一个乒乓球，走到终点。", value: 10 },
+    { text: "让对方给你系围巾。", value: 10 },
+    { text: "接下来的5分钟，必须像服务员一样对待对方。", value: 10 },
+    { text: "用脚后跟走路10步。", value: 10 },
+    { text: "让对方给你涂指甲油。", value: 10 },
+    { text: "接下来的5分钟，说话必须押韵。", value: 10 },
+    { text: "做一个后空翻（做不到就做一个侧手翻）。", value: 10 },
+    { text: "用眉毛夹住一根牙签。", value: 10 },
+    { text: "让对方给你编一个麻花辫。", value: 10 },
+    { text: "接下来的3句话必须倒着说。", value: 10 },
+    { text: "用膝盖走路10步。", value: 10 },
+    { text: "让对方给你涂防晒霜。", value: 10 },
+    { text: "学蜡笔小新说话。", value: 10 },
+    { text: "用嘴叼着一支笔，签下自己的名字。", value: 10 },
+    { text: "让对方给你戴上耳机，听一首歌。", value: 10 },
+    { text: "做一个高抬腿动作10次。", value: 10 },
+    { text: "用舌头舔一下自己的手肘（挑战极限）。", value: 10 },
+    // L3 (+15)
+    { text: "用嘴叼着毛巾擦脸。", value: 15 },
+    { text: "让对方给你挠痒痒。", value: 15 },
+    { text: "做一个一字马（做不到就压腿）。", value: 15 },
+    { text: "用肚子顶着一个气球，走到房间的另一端。", value: 15 },
+    { text: "让对方给你系鞋带。", value: 15 },
+    { text: "学机器人走路10步。", value: 15 },
+    { text: "用嘴叼着一张纸，折一架纸飞机。", value: 15 },
+    { text: "让对方给你涂口红。", value: 15 },
+    { text: "接下来的5分钟，只能像猫咪一样走路。", value: 15 },
+    { text: "用脚后跟走路10步。", value: 15 },
+    { text: "让对方给你戴上一个奇怪的帽子。", value: 15 },
+    { text: "学大猩猩捶胸顿足5次。", value: 15 },
+    { text: "用脸颊夹住一个乒乓球，坚持1分钟。", value: 15 },
+    { text: "让对方给你系围巾。", value: 15 },
+    { text: "接下来的3句话必须倒着说。", value: 15 },
+    { text: "用膝盖走路10步。", value: 15 },
+    { text: "让对方给你涂防晒霜。", value: 15 },
+    { text: "学蜡笔小新说话。", value: 15 },
+    { text: "用嘴叼着一支笔，写下一个承诺。", value: 15 },
+    { text: "让对方给你戴上耳机，听一首情歌。", value: 15 },
+    { text: "做一个高抬腿动作10次。", value: 15 },
+    { text: "用舌头舔一下自己的手肘。", value: 15 },
+    { text: "让对方给你剥一个葡萄吃。", value: 15 },
+    { text: "接下来的5分钟，不能眨眼。", value: 15 },
+    { text: "用脚趾夹住一支笔，画一个爱心。", value: 15 },
+    { text: "让对方给你画一个络腮胡。", value: 15 },
+    { text: "学唐老鸭说话。", value: 15 },
+    { text: "用嘴叼着纸巾递给对方。", value: 15 },
+    { text: "让对方给你挠痒。", value: 15 },
+    { text: "做一个一字马。", value: 15 },
+    { text: "用肚子顶着气球走路。", value: 15 },
+    { text: "让对方给你系鞋带。", value: 15 },
+    { text: "接下来的3分钟不能眨眼。", value: 15 },
+    { text: "用脸颊夹一张纸。", value: 15 },
+    { text: "让对方给你涂口红。", value: 15 },
+    { text: "学唐老鸭说话。", value: 15 },
+    { text: "用嘴叼着一朵花送给对方。", value: 15 },
+    { text: "让对方给你系围巾。", value: 15 },
+    { text: "做一个后空翻。", value: 15 },
+    { text: "用膝盖走路10步。", value: 15 },
+    // L4 (+20)
+    { text: "公主抱挑战：抱起对方（哪怕只能坚持1秒），并转一圈。", value: 20 },
+    { text: "后背传信：蒙住对方的眼睛，用手指在他/她背上写一个字，让对方猜。", value: 20 },
+    { text: "互喂：不用手，只用嘴含着一颗糖果，渡给对方。", value: 20 },
+    { text: "蒙眼喂食：蒙住你的眼睛，由对方喂你吃三种不同的零食，你猜是什么。", value: 20 },
+    { text: "系鞋带：单膝跪地，帮对方系好鞋带。", value: 20 },
+    { text: "深蹲拥抱：两人面对面做深蹲，并在最低点紧紧拥抱。", value: 20 },
+    { text: "手腕相连：用一根丝带轻轻绑住你们的手腕，接下来的5分钟你们必须连在一起行动。", value: 20 },
+    { text: "托举下巴：一手托起对方的下巴，深情对视 5 秒，不能笑。", value: 20 },
+    { text: "互换外套：当场脱下外套，给对方穿上，并帮对方整理衣领。", value: 20 },
+    { text: "十指紧扣：十指紧扣，用力缠绕 10 秒，感受彼此的脉搏。", value: 20 },
+    { text: "耳畔私语：在对方耳边用气声说出你最想对他/她说的一句情话。", value: 20 },
+    { text: "背对背挤压：背对背紧紧靠在一起，用力挤压 10 秒。", value: 20 },
+    { text: "绝对服从：接下来的 1 分钟，对方是你的“指挥官”，必须无条件听从指令。", value: 20 },
+    { text: "腿部按摩：帮对方按压小腿（隔着裤子），持续 1 分钟。", value: 20 },
+    { text: "唇印挑战：不用手，用嘴唇把一张便利贴贴在对方脸上。", value: 20 },
+    { text: "托举：让对方把你抱起来（公主抱），并走两步。", value: 20 },
+    { text: "额头吻：在对方额头印下一个长达 5 秒的吻。", value: 20 },
+    { text: "互换一只鞋：脱下自己的一只鞋给对方穿上，单脚跳 5 下。", value: 20 },
+    { text: "手铐游戏：用围巾轻轻绑住对方的手腕 30 秒，再解开。", value: 20 },
+    { text: "全身镜合影：在全身镜前，摆出一个极具亲密感的姿势，并拍照留念。", value: 20 }
+];
+
+/* =========================================================
+   题库结构初始化
+   ========================================================= */
+function initPools() {
+    const pools = { truth: [], dare: [] };
+    truthPool.forEach(q => pools.truth.push({ ...q, banned: false }));
+    darePool.forEach(q => pools.dare.push({ ...q, banned: false }));
+    return pools;
+}
+
+let allPools = initPools();
+
+/* =========================================================
+   共享 Ban 系统逻辑
+   ========================================================= */
+let banType = "truth";
+let banQuota = { truth: 50, dare: 50 };
+let currentBanPlayer = "";
+
+function showBanPage() {
+    document.getElementById("startPage").style.display = "none";
+    document.getElementById("banPage").style.display = "block";
+    banType = "truth";
+    currentBanPlayer = "B"; // 小韩先 Ban 真心话
+    renderBanPage();
+}
+
+function renderBanPage() {
+    const pool = banType === "truth" ? allPools.truth : allPools.dare;
+    const playerName = currentBanPlayer === "A" ? "小王" : "小韩";
+    const remaining = banQuota[banType];
+
+    document.getElementById("banTurn").innerText =
+        `当前轮到：${playerName} Ban ${banType === "truth" ? "真心话" : "大冒险"}`;
+    document.getElementById("banCounter").innerText =
+        `剩余可 Ban：${remaining} / 50`;
+
+    const list = document.getElementById("banList");
+    list.innerHTML = "";
+
+    pool.forEach((item, i) => {
+        if (item.banned) return;
+        list.innerHTML += `
+            <label class="ban-item">
+                <input type="checkbox" onchange="toggleBan(this, ${i})">
+                <span class="ban-text">${item.text}</span>
+            </label>
+        `;
+    });
+}
+
+function toggleBan(checkbox, index) {
+    const pool = banType === "truth" ? allPools.truth : allPools.dare;
+    const item = pool[index];
+    const remaining = banQuota[banType];
+
+    if (checkbox.checked) {
+        if (remaining <= 0) {
+            checkbox.checked = false;
+            alert("已达到 Ban 题上限！");
+            return;
+        }
+        item.banned = true;
+        banQuota[banType]--;
+    } else {
+        item.banned = false;
+        banQuota[banType]++;
+    }
+    renderBanPage();
+}
+
+function finishBan() {
+    if (banType === "truth" && currentBanPlayer === "B") {
+        currentBanPlayer = "A";
+        renderBanPage();
+        return;
+    }
+    if (banType === "truth" && currentBanPlayer === "A") {
+        banType = "dare";
+        currentBanPlayer = "A"; // 小王先 Ban 大冒险
+        renderBanPage();
+        return;
+    }
+    if (banType === "dare" && currentBanPlayer === "A") {
+        currentBanPlayer = "B";
+        renderBanPage();
+        return;
+    }
+    startGame();
+}
+
+/* =========================================================
+   游戏逻辑
+   ========================================================= */
+let turn = "A";
+let energy = { A:0, B:0 };
+let records = { A:[], B:[] };
+let choiceHistory = { A:[], B:[] };
+let inviteCount = { A:2, B:2 };
+let currentType = "";
+
+const barA = document.getElementById("barA");
+const barB = document.getElementById("barB");
+const turnText = document.getElementById("turn");
+const card = document.getElementById("card");
+const cardTitle = document.getElementById("cardTitle");
+const cardContent = document.getElementById("cardContent");
+const actionRow = document.getElementById("actionRow");
+const btnTruth = document.getElementById("btnTruth");
+const btnDare = document.getElementById("btnDare");
+
+function startGame() {
+    document.getElementById("banPage").style.display = "none";
+    document.getElementById("startPage").style.display = "none";
+    document.getElementById("gamePage").style.display = "block";
+    lockMainButtons();
+    updateButtons();
+}
+
+function draw(type) {
+    currentType = type;
+    const pool = type === "truth" ? allPools.truth : allPools.dare;
+    const available = pool.filter(i => !i.banned);
+    
+    if (available.length === 0) {
+        alert("题库已被 Ban 光了，请刷新重来！");
+        return;
+    }
+
+    const item = available[Math.floor(Math.random() * available.length)];
+    renderCard(type, item);
+}
+
+function renderCard(type, item) {
+    cardTitle.innerText = type === "truth" ? "💬 真心话" : "🏃 大冒险";
+    cardContent.innerText = item.text;
+    card.classList.add("show");
+
+    actionRow.innerHTML = `
+        <button class="action-btn btn-refuse" onclick="actionRefuse()">❌ 拒绝作答 (-5%)</button>
+        <button class="action-btn btn-reroll" onclick="actionReroll()">🔄 重新抽题</button>
+        <button class="action-btn btn-invite" id="inviteBtn" onclick="actionInvite()" ${inviteCount[turn] <= 0 ? "disabled" : ""}>
+            🙋 邀请对方作答 (剩 ${inviteCount[turn]} 次)
+        </button>
+        <button class="action-btn btn-done" onclick="actionDone(${item.value})">✅ 完成作答 (+${item.value}%)</button>
+    `;
+
+    lockMainButtons();
+}
+
+function lockMainButtons() {
+    btnTruth.disabled = true;
+    btnDare.disabled = true;
+}
+
+function unlockMainButtons() {
+    btnTruth.disabled = false;
+    btnDare.disabled = false;
+}
+
+function actionRefuse() {
+    energy[turn] = Math.max(0, energy[turn] - 5);
+    records[turn].push({ q: cardContent.innerText, v: -5 });
+    updateBars();
+    nextTurn();
+}
+
+function actionReroll() {
+    records[turn].push({ q: cardContent.innerText, v: 0 });
+    draw(currentType);
+}
+
+function actionInvite() {
+    if (inviteCount[turn] <= 0) return;
+    inviteCount[turn]--;
+    const other = turn === "A" ? "B" : "A";
+    alert(`你邀请了 ${other === "A" ? "小王" : "小韩"} 来回答这道题！`);
+    turn = other;
+    records[turn].push({ q: cardContent.innerText, v: 0 });
+    updateBars();
+    updateButtons();
+}
+
+function actionDone(value) {
+    energy[turn] = Math.min(100, energy[turn] + value);
+    records[turn].push({ q: cardContent.innerText, v: value });
+    updateBars();
+    nextTurn();
+}
+
+function nextTurn() {
+    turn = turn === "A" ? "B" : "A";
+    turnText.innerText = `当前回合：${turn === "A" ? "小王" : "小韩"}`;
+    updateButtons();
+    unlockMainButtons();
+
+    if (energy.A >= 100 || energy.B >= 100) {
+        endGame(energy.A >= 100 ? "A" : "B");
+    }
+}
+
+function updateButtons() {
+    const h = choiceHistory[turn];
+    btnTruth.disabled = h.filter(x => x === "truth").length >= 3;
+    btnDare.disabled = h.filter(x => x === "dare").length >= 3;
+}
+
+function updateBars() {
+    barA.style.width = energy.A + "%";
+    barB.style.width = energy.B + "%";
+}
+
+function endGame(winner) {
+    document.getElementById("gamePage").style.display = "none";
+    document.getElementById("resultPage").style.display = "block";
+    document.getElementById("winnerText").innerText =
+        winner === "A" ? "🎉 小王获胜！" : "🎉 小韩获胜！";
+    renderRecord("A", "recordA");
+    renderRecord("B", "recordB");
+}
+
+function renderRecord(player, domId) {
+    const dom = document.getElementById(domId);
+    dom.innerHTML = "";
+    records[player].forEach((item, i) => {
+        const sign = item.v >= 0 ? "+" : "";
+        dom.innerHTML += `
+            <div class="record-item">
+                ${i + 1}. ${item.q}<br>
+                <span style="color:#888;">（能量变化：${sign}${item.v}%）</span>
+            </div>
+        `;
+    });
+}
+
+function restart() { location.reload(); }
+</script>
+
+</body>
+</html>
