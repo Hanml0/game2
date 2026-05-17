@@ -1,0 +1,3308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>恋爱冲动槽 · 温柔互动题库版</title>
+<style>
+:root {
+    --pink-50: #fff7fb;
+    --pink-100: #ffe7f0;
+    --pink-200: #ffc8dc;
+    --pink-400: #ff6fa8;
+    --pink-500: #f43f86;
+    --pink-600: #db2777;
+    --blue-400: #60a5fa;
+    --blue-600: #2563eb;
+    --green-500: #22c55e;
+    --yellow-400: #facc15;
+    --red-500: #ef4444;
+    --ink: #322535;
+    --muted: #7d6b79;
+    --card: rgba(255, 255, 255, .88);
+    --stroke: rgba(255, 120, 170, .18);
+    --shadow: 0 22px 60px rgba(219, 39, 119, .18);
+    --radius-xl: 28px;
+    --radius-lg: 22px;
+    --radius-md: 16px;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html { min-height: 100%; background: #fff0f6; }
+
+body {
+    min-height: 100dvh;
+    margin: 0;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
+    background:
+        radial-gradient(circle at 14% 10%, rgba(255,255,255,.95) 0 10%, transparent 24%),
+        radial-gradient(circle at 88% 18%, rgba(255,214,232,.92) 0 11%, transparent 27%),
+        linear-gradient(150deg, #fff6fb 0%, #ffe3ef 46%, #ffd6e8 100%);
+    text-align: center;
+    overflow-x: hidden;
+}
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    width: 220px;
+    height: 220px;
+    border-radius: 999px;
+    background: rgba(255, 111, 168, .18);
+    filter: blur(8px);
+    pointer-events: none;
+    z-index: 0;
+}
+body::before { left: -90px; top: 70px; }
+body::after { right: -110px; bottom: 40px; background: rgba(96, 165, 250, .16); }
+
+.app {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 520px);
+    min-height: 100dvh;
+    margin: 0 auto;
+    padding: max(18px, env(safe-area-inset-top)) 14px max(24px, env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+}
+
+.page {
+    display: none;
+    width: 100%;
+    animation: popIn .28s ease both;
+}
+.page.active { display: block; }
+
+@keyframes popIn {
+    from { opacity: 0; transform: translateY(10px) scale(.99); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 22px;
+    border: 1px solid rgba(255,255,255,.72);
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    text-align: left;
+}
+
+.hero {
+    text-align: center;
+    padding: 10px 0 8px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(255, 231, 240, .9);
+    color: var(--pink-600);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .02em;
+}
+
+h1 {
+    margin: 12px 0 8px;
+    font-size: clamp(28px, 8vw, 42px);
+    line-height: 1.05;
+    color: var(--pink-600);
+    text-align: center;
+    letter-spacing: -.04em;
+}
+
+.subtitle {
+    margin: 0 auto;
+    max-width: 28em;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: center;
+}
+
+.rule-card, .soft-card, #card, .result-section {
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, rgba(255,255,255,.82), rgba(255,247,251,.74));
+    box-shadow: 0 12px 32px rgba(244, 63, 134, .08);
+}
+
+.rule-card {
+    margin-top: 18px;
+    padding: 16px;
+}
+
+.rule-title, .section-title, .result-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-weight: 900;
+    color: var(--pink-600);
+}
+
+.rule-card ol, .rule-card ul { padding-left: 20px; }
+.rule-card li { margin: 7px 0; line-height: 1.55; color: #514052; }
+.rule-card strong { color: #3a293b; }
+
+.btn-stack, .btn-row, .action-row { display: flex; gap: 12px; }
+.btn-stack { flex-direction: column; margin-top: 18px; }
+.btn-row { margin-top: 16px; }
+.action-row { flex-wrap: wrap; margin-top: 14px; }
+
+.btn, .action-btn {
+    appearance: none;
+    border: 0;
+    min-height: 48px;
+    border-radius: 17px;
+    padding: 13px 16px;
+    font: inherit;
+    font-weight: 850;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease, filter .15s ease;
+}
+.btn { width: 100%; color: #fff; box-shadow: 0 12px 24px rgba(244, 63, 134, .22); }
+.btn-row .btn { flex: 1; }
+.action-btn { flex: 1 1 calc(50% - 8px); font-size: 14px; color: #fff; }
+.btn:active, .action-btn:active { transform: scale(.98); }
+.btn:disabled, .action-btn:disabled { opacity: .42; cursor: not-allowed; box-shadow: none; filter: grayscale(.1); }
+
+.btn-truth, .btn-done { background: linear-gradient(135deg, #ff82b2, var(--pink-600)); }
+.btn-dare { background: linear-gradient(135deg, #fb7185, #f43f5e); }
+.btn-secondary { background: linear-gradient(135deg, #8b5cf6, #ec4899); }
+.btn-refuse { background: linear-gradient(135deg, #fb7185, var(--red-500)); }
+.btn-reroll { background: linear-gradient(135deg, #fde047, #f59e0b); color: #473311; }
+.btn-invite { background: linear-gradient(135deg, #4ade80, var(--green-500)); }
+
+.energy-area {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 18px 0 14px;
+}
+.energy-card {
+    padding: 12px;
+    border: 1px solid rgba(255,255,255,.78);
+    border-radius: 20px;
+    background: rgba(255,255,255,.68);
+}
+.player-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.name { font-size: 14px; font-weight: 950; }
+.score { font-size: 13px; color: var(--muted); font-weight: 900; }
+.bar-bg {
+    position: relative;
+    height: 15px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(50, 37, 53, .08);
+}
+.bar {
+    height: 100%;
+    width: 0%;
+    min-width: 0;
+    border-radius: inherit;
+    transition: width .45s cubic-bezier(.2, .8, .2, 1);
+}
+#barA { background: linear-gradient(90deg, #ff9ac2, var(--pink-600)); }
+#barB { background: linear-gradient(90deg, #93c5fd, var(--blue-600)); }
+
+.turn-pill, .ban-title, .ban-counter, .card-meta {
+    border-radius: 999px;
+    background: rgba(255, 231, 240, .76);
+    color: #6d3152;
+    font-weight: 850;
+}
+.turn-pill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 42px;
+    padding: 10px 14px;
+    text-align: center;
+}
+
+#card {
+    display: none;
+    margin-top: 16px;
+    padding: 16px;
+}
+#card.show { display: block; }
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+#cardTitle { font-size: 16px; font-weight: 950; color: var(--pink-600); }
+.point-badge {
+    flex: 0 0 auto;
+    border-radius: 999px;
+    padding: 6px 10px;
+    background: var(--pink-100);
+    color: var(--pink-600);
+    font-weight: 950;
+    font-size: 13px;
+}
+.point-badge.negative { background: #fee2e2; color: #dc2626; }
+#cardContent {
+    min-height: 86px;
+    padding: 18px;
+    border-radius: 20px;
+    background: #fff;
+    color: #332435;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1.55;
+    box-shadow: inset 0 0 0 1px rgba(244,63,134,.10);
+}
+.card-meta {
+    display: inline-flex;
+    margin-top: 12px;
+    padding: 7px 11px;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.ban-title, .ban-counter {
+    display: inline-flex;
+    padding: 8px 12px;
+    margin: 6px 0;
+    font-size: 14px;
+}
+.ban-counter { background: rgba(255,255,255,.72); color: var(--muted); }
+.ban-list {
+    margin-top: 12px;
+    max-height: min(58dvh, 480px);
+    overflow-y: auto;
+    border: 1px solid var(--stroke);
+    border-radius: 22px;
+    background: rgba(255,255,255,.66);
+    padding: 8px;
+    overscroll-behavior: contain;
+}
+.ban-item {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0 0 8px;
+    padding: 12px;
+    border-radius: 16px;
+    background: rgba(255,255,255,.72);
+    color: #4b394d;
+    font-size: 14px;
+    line-height: 1.55;
+}
+.ban-item input {
+    width: 20px;
+    height: 20px;
+    margin: 1px 0 0;
+    accent-color: var(--pink-600);
+}
+.ban-text { word-break: break-word; }
+.empty-tip {
+    padding: 28px 16px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+}
+
+.result-section {
+    margin-top: 14px;
+    padding: 15px;
+}
+.record-list {
+    display: grid;
+    gap: 9px;
+    margin-top: 8px;
+}
+.record-item {
+    padding: 11px 12px;
+    border-radius: 15px;
+    background: rgba(255,255,255,.74);
+    font-size: 14px;
+    line-height: 1.55;
+    color: #4b394d;
+}
+.record-delta { color: var(--muted); font-weight: 850; }
+
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    z-index: 50;
+    max-width: min(92vw, 460px);
+    padding: 12px 16px;
+    border-radius: 999px;
+    background: rgba(50, 37, 53, .92);
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0 16px 36px rgba(0,0,0,.18);
+    transform: translate(-50%, 20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-width: 430px) {
+    .app { align-items: flex-start; padding-left: 10px; padding-right: 10px; }
+    .container { padding: 18px 14px; border-radius: 24px; }
+    .energy-area { gap: 9px; }
+    .energy-card { padding: 10px; }
+    .btn-row, .action-row { gap: 9px; }
+    .action-btn { flex-basis: 100%; min-height: 47px; }
+    #cardContent { font-size: 18px; padding: 16px; min-height: 96px; }
+    .rule-card { padding: 14px 12px; }
+}
+
+@media (max-width: 360px) {
+    .energy-area { grid-template-columns: 1fr; }
+    .btn-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<main class="app">
+    <section class="page active" id="startPage">
+        <div class="container">
+            <div class="hero">
+                <div class="badge">💗 双人互动 · 温柔题库版</div>
+                <h1>⚡ 恋爱冲动槽</h1>
+                <p class="subtitle">赛前 Ban 题、轮流抽题、完成任务积攒能量。大冒险默认双方自愿，不舒服可拒绝或重抽。</p>
+            </div>
+            <div class="rule-card">
+                <div class="rule-title">📖 游戏规则说明</div>
+                <ol>
+                    <li><strong>Ban 题阶段（共享配额）：</strong>
+                        <ul>
+                            <li>真心话：题库 200 道，共享 Ban 50 道，<strong>小韩先 Ban</strong>，小王后 Ban</li>
+                            <li>大冒险：题库 200 道，共享 Ban 50 道，<strong>小王先 Ban</strong>，小韩后 Ban</li>
+                            <li>后 Ban 的人只能 Ban 剩余额度</li>
+                        </ul>
+                    </li>
+                    <li><strong>分级题库：</strong>真心话/大冒险各 200 道；L1/L2/L3/L4 比例为 40%/30%/20%/10%。</li>
+                    <li><strong>分值平衡：</strong>真心话 3/5/8/12 分，大冒险 6/10/16/24 分；真心话平均分约为大冒险的一半。</li>
+                    <li><strong>答题决策：</strong>抽题后必须完成拒绝、重抽、邀请对方代答或完成作答之一。</li>
+                    <li><strong>状态锁：</strong>当前题目处理完成前，不能再次抽题。</li>
+                    <li><strong>安全边界：</strong>所有大冒险默认建立在双方愿意的前提下；任何不舒服的任务都可以拒绝或重抽。</li>
+                </ol>
+            </div>
+            <div class="btn-stack">
+                <button class="btn btn-secondary" id="startBanBtn" type="button">🚫 赛前 Ban 题</button>
+                <button class="btn btn-truth" id="startDirectBtn" type="button">🎯 直接开始游戏</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="page" id="banPage">
+        <div class="container">
+            <div class="hero">
+                <div class="badge">🚫 赛前筛选</div>
+                <h1>Ban 题阶段</h1>
+                <p class="subtitle">勾选不想玩的题。本轮勾错可以取消，进入下一轮后会自动锁定。</p>
+            </div>
+            <div class="ban-title" id="banTurn"></div>
+            <div class="ban-counter" id="banCounter"></div>
+            <div class="ban-list" id="banList"></div>
+            <button class="btn btn-dare" id="banNextBtn" type="button" style="margin-top:15px;">✅ 确认并进入下一步</button>
+        </div>
+    </section>
+
+    <section class="page" id="gamePage">
+        <div class="container">
+            <div class="hero">
+                <div class="badge">⚡ 能量对决</div>
+                <h1>恋爱冲动槽</h1>
+            </div>
+
+            <div class="energy-area">
+                <div class="energy-card">
+                    <div class="player-row"><span class="name">👦 小王</span><strong class="score" id="scoreA">0%</strong></div>
+                    <div class="bar-bg"><div class="bar" id="barA"></div></div>
+                </div>
+                <div class="energy-card">
+                    <div class="player-row"><span class="name">👧 小韩</span><strong class="score" id="scoreB">0%</strong></div>
+                    <div class="bar-bg"><div class="bar" id="barB"></div></div>
+                </div>
+            </div>
+
+            <div class="turn-pill" id="turn">当前回合：小王</div>
+            <div class="btn-row">
+                <button class="btn btn-truth" id="btnTruth" type="button">💬 真心话</button>
+                <button class="btn btn-dare" id="btnDare" type="button">🏃 大冒险</button>
+            </div>
+
+            <div id="card">
+                <div class="card-top">
+                    <div id="cardTitle"></div>
+                    <div class="point-badge" id="pointBadge"></div>
+                </div>
+                <div id="cardContent"></div>
+                <div class="card-meta" id="cardMeta"></div>
+                <div class="action-row" id="actionRow"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page" id="resultPage">
+        <div class="container">
+            <div class="hero">
+                <div class="badge">🎉 游戏结束</div>
+                <h1 id="winnerText"></h1>
+                <p class="subtitle">本局答题记录已整理好，可以截图保存。</p>
+            </div>
+            <div class="result-section">
+                <div class="result-title">👦 小王的答题记录</div>
+                <div class="record-list" id="recordA"></div>
+            </div>
+            <div class="result-section">
+                <div class="result-title">👧 小韩的答题记录</div>
+                <div class="record-list" id="recordB"></div>
+            </div>
+            <button class="btn btn-truth" id="restartBtn" type="button" style="margin-top:18px;">🔄 再来一局</button>
+        </div>
+    </section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* =========================================================
+   📚 400 道情侣题库（真心话/大冒险各 200 道）
+   难度比例：L1 40% / L2 30% / L3 20% / L4 10%
+   分值：真心话 3/5/8/12，平均 5.5；大冒险 6/10/16/24，平均 11
+   设计目标：真心话平均得分约等于大冒险平均得分的一半
+   ========================================================= */
+
+const truthPool = [
+    {
+        "text": "你最喜欢我今天身上的哪个小细节？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你觉得我笑起来最有感染力的时刻是什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你最喜欢我说话时的哪个语气？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "最近一次觉得我可爱，是因为什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你觉得我最像哪种小动物？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你手机里给我的备注是什么风格？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你最喜欢我发给你的哪类表情包？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "我做什么小动作会让你忍不住笑？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你觉得我哪种穿搭最适合约会？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "我吃东西时有没有让你印象深刻的小习惯？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你最喜欢我身上的哪种味道？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你觉得我哪张照片最有恋爱感？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "我哪句话听起来最像我的口头禅？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你觉得我认真做事时有什么魅力？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你最喜欢我哪种笑容？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "我哪次撒娇最自然？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你觉得我在家里最像什么角色？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你觉得我的眼神通常给你什么感觉？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你最近发现我哪个新的小习惯？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "如果用一个词形容今天的我，你会选什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "日常观察"
+    },
+    {
+        "text": "你觉得我更适合早睡还是晚睡的生活节奏？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我最适合哪种约会地点？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你认为我最喜欢被怎样夸奖？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "我压力大时，你觉得我最需要什么安慰？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我更喜欢惊喜还是稳定的安排？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我更像理性派还是感性派？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我最适合养猫还是养狗？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我更喜欢热闹还是安静的周末？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "如果给我点一杯饮料，你会点什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我最适合哪种旅行方式？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "我无聊的时候，你觉得我最可能做什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我最离不开哪样小物件？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我最喜欢什么类型的亲密称呼？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "我生气时，你觉得我最希望对方怎么做？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我更喜欢拍照还是被拍照？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我最适合哪种电影角色？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我最喜欢什么样的仪式感？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我最容易被哪种小事感动？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我最适合哪一种花？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "你觉得我恋爱里最明显的偏好是什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "喜好偏好"
+    },
+    {
+        "text": "我们最近一次笑得很开心，是因为什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你还记得我们第一次认真聊天的话题吗？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "我们哪次一起吃饭让你印象最深？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你记得我们第一次见面时你的第一感觉吗？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "最近哪一个瞬间让你觉得我们很像情侣？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你最喜欢我们一起走过的哪一段路？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "我们最近一次默契配合是什么时候？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你最喜欢我们之间哪个只有彼此懂的梗？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你还记得我第一次送你的东西吗？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "我们哪一次拍照让你最想保存？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你记得我第一次让你心情变好是什么时候吗？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "我们最近一次小惊喜是什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你最喜欢我们哪次临时起意的安排？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你觉得我们最像老夫老妻的时刻是什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你记得我第一次叫你特别称呼是什么时候吗？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "我们哪次一起犯傻最有趣？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你最近一次想把某个瞬间记录下来，是哪一刻？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你最喜欢我们一起待着但什么也不做的哪次？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "你觉得我们哪次聊天最放松？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "如果给我们最近一周取个标题，你会取什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "轻松回忆"
+    },
+    {
+        "text": "如果我们是一部剧，你觉得剧名叫什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果把我比成一种甜品，你会选什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我们今天有一个恋爱任务，你想是什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我是一种天气，你觉得我是哪一种？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我是一首歌，你觉得会是什么风格？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我变成一天的小朋友，你会怎么照顾我？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我们一起开一家小店，你觉得会卖什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我是一种颜色，你觉得我是什么颜色？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我们有情侣口号，你想怎么喊？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我是一座城市，你觉得是哪座城市的感觉？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我们拍一张海报，主题会是什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果给我安排一个超能力，你希望是什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我们今晚只能说三个字，你会对我说什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我是一种季节，你觉得我是哪一季？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我们有一只共同的宠物，你想叫它什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我变成表情包，你觉得会是哪一种表情？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我们做一期情侣播客，标题会是什么？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我是一道菜，你觉得我是什么味道？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果今天要给彼此颁奖，你会给我什么奖？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "如果我们有一首专属背景音乐，你觉得应该是什么氛围？",
+        "value": 3,
+        "level": "L1 暖场了解",
+        "category": "趣味想象"
+    },
+    {
+        "text": "你第一次明确觉得自己对我心动，是哪一刻？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "我做过哪件小事让你一直记到现在？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你最喜欢我表达喜欢的哪种方式？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你觉得我们之间最甜的一次互动是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你最近一次因为我心情变好，是为什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你觉得我最让你安心的地方是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你有没有某个瞬间很想抱抱我？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你最想重来一次的约会是哪一次？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你觉得我们之间最有默契的一句话是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你最喜欢我主动靠近你的哪种方式？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你第一次发现我在乎你的证据是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你觉得我最会照顾你的地方是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你有没有因为我变得更期待某一天？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你觉得我们最适合一起做哪件浪漫小事？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你最喜欢我叫你的哪个称呼？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你觉得我什么时候最温柔？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你有没有偷偷回看过我们的聊天记录？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你觉得我哪次认真听你说话让你很感动？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你最喜欢我们之间哪种眼神交流？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "你觉得我最值得被珍惜的地方是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "心动瞬间"
+    },
+    {
+        "text": "在这段关系里，你最需要我给你的是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我们相处最舒服的模式是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你希望我在你低落时怎么陪你？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我们谁更需要被哄？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你最希望我理解你的哪个小习惯？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我们之间最适合的沟通节奏是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你希望我多主动一点的事情是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我们现在最稳定的地方是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你在恋爱里最看重的安全感来自哪里？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我们最容易因为哪类小事闹别扭？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你希望我在公共场合怎样表达亲密？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我们哪种相处方式最像家人？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你希望我少做一点的玩笑是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我们最需要保留的个人空间是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你最喜欢我们一起做决定的哪种方式？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我怎样表达不开心最容易被你理解？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你希望我在朋友面前怎么介绍你？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我们相处里最需要继续保持的习惯是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你希望我更多问你哪一类问题？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "你觉得我们之间最像队友的时刻是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "关系偏好"
+    },
+    {
+        "text": "接下来一个月，你最想和我一起完成哪件小事？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起去的城市是哪一个？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起尝试的约会主题是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "如果周末只属于我们，你想怎么安排？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起学的一项技能是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起做的一顿饭是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起看的电影类型是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起拥有的纪念物是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起拍的一组照片主题是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起过的节日是哪一个？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想收到我怎样准备的小惊喜？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起制定的生活计划是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起逛的地方是哪类？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起体验的一次旅行是什么样？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起建立的情侣习惯是什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起写的一张愿望清单里有什么？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起收藏的回忆是什么形式？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想让我陪你完成哪件一直拖着的事？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想和我一起拥有的一天会从哪里开始？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你最想把我们的一段关系升级成什么样子？",
+        "value": 5,
+        "level": "L2 心动表达",
+        "category": "期待清单"
+    },
+    {
+        "text": "你觉得我哪句话最能给你安全感？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你最害怕我误会你的哪一点？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "当你沉默时，你最希望我怎么理解你？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你觉得我们吵架后最需要先做什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你最希望我学会尊重你的哪个边界？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你觉得我最容易忽略你的哪种感受？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你最希望我在你忙碌时怎么支持你？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你觉得我们表达爱意的方式有什么不同？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你最希望我少用哪种语气和你说话？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你觉得我们需要建立的一个沟通规则是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你最希望我在你压力大时避免做什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你觉得我们之间最值得被保护的信任是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你有没有一件小事想告诉我但一直没开口？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你觉得我什么行为会让你产生距离感？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你最希望我在情绪上给你哪种确认？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你觉得我们谁更容易憋着不说？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你最希望我怎样听你讲完一件事？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你觉得我们最需要练习的道歉方式是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你最想让我理解你哪种脆弱？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你觉得我们怎样才能把小矛盾讲清楚？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "安全感与边界"
+    },
+    {
+        "text": "你理想中两个人共同生活的日常是什么样？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "如果未来同居，你最在意的生活习惯是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你觉得我们在金钱观上最需要提前沟通什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你对长期关系里个人空间的底线是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你希望未来的我们保留哪种仪式感？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你觉得我们适合怎样分担家务和责任？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你对见朋友或家人的节奏有什么期待？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "如果未来遇到异地，你最需要什么约定？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你觉得我们各自成长时怎样不把对方落下？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你希望我们未来遇到压力时用什么方式站在一起？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你认为长期关系里最容易被忽略的小事是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你觉得我们什么时候需要认真开一次关系会议？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你对未来一年我们的关系有什么期待？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你觉得我们需要一起减少的坏习惯是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你希望我参与到你未来计划的哪一部分？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你觉得我们面对分歧时最公平的规则是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你希望我们如何保留各自的朋友和兴趣？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你觉得稳定关系里最重要的自由是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你希望我怎样支持你的梦想？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你觉得我们的未来最值得期待的画面是什么？",
+        "value": 8,
+        "level": "L3 深度沟通",
+        "category": "未来规划"
+    },
+    {
+        "text": "你有没有哪一刻很需要我，但没有说出口？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "你最怕在这段关系里失去什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "如果我做错一件事，你最希望我怎样补救？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "你有没有因为怕影响我而隐藏过情绪？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "你觉得我们之间最需要被认真修复的问题是什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "你最希望我以后不要再轻易开哪类玩笑？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "你觉得我哪一次让你有点失望？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "你最想对过去某次争执中的我说什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "你有没有一个关于我们的担心一直没讲？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "你希望我怎样证明我愿意长期经营这段关系？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "脆弱坦白"
+    },
+    {
+        "text": "如果未来几年只有一个共同目标，你希望是什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    },
+    {
+        "text": "你觉得我们要走得更远，最需要一起改变什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    },
+    {
+        "text": "你愿意为这段关系坚持的一个原则是什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    },
+    {
+        "text": "如果我们遇到很大的外部压力，你希望我们怎样面对？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    },
+    {
+        "text": "你希望我在你人生低谷里扮演什么角色？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    },
+    {
+        "text": "你认为真正的承诺对我们来说意味着什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    },
+    {
+        "text": "你最希望多年以后我们仍然保留哪种亲密？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    },
+    {
+        "text": "你觉得我们之间最不能失守的底线是什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    },
+    {
+        "text": "如果要给未来的我们写一句提醒，你会写什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    },
+    {
+        "text": "你现在最认真想对我承认的一件事是什么？",
+        "value": 12,
+        "level": "L4 灵魂坦白",
+        "category": "长期承诺"
+    }
+];
+
+const darePool = [
+    {
+        "text": "用三种语气对对方说一句今天辛苦啦。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "模仿对方平时最常出现的一个表情。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "给对方起一个新的可爱昵称，并认真叫三遍。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用夸张主持人的语气介绍对方出场。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "对着对方做一个你觉得最可爱的鬼脸。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用叠词说话一分钟。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用一句广告词夸对方今天的状态。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "模仿对方收到好消息时的反应。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用认真脸说一句最肉麻但不过分的话。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用方言或奇怪口音说我很喜欢你。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "给对方表演一个三秒钟的偶像剧转身。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用一句诗意的话形容对方的笑容。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "模仿对方撒娇时的语气十秒。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用三个词连续夸对方，不能重复。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "让对方指定一个表情，你保持十秒。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用新闻播报腔播报你们今天的约会。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "说出对方三个优点，每个都要举例。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用小动物语气和对方对话一分钟。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "把对方今天的穿搭夸成红毯造型。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "用一句话给对方颁发今日最佳恋人奖。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "语言表情"
+    },
+    {
+        "text": "和对方击掌三次，每次说一个对方优点。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "帮对方把桌面或身边小物摆整齐。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "给对方倒一杯水，并说一句温柔提示。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "面对面对视五秒，谁先笑谁做个鬼脸。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "一起比一个情侣拍照姿势，坚持五秒。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "给对方展示一个你最近学会的小动作。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "用手势比划一个词，让对方猜。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "和对方同步做三次深呼吸。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "原地转一圈，然后对对方说我回来啦。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "给对方做一个夸张的请坐手势。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "帮对方整理一下衣袖或衣领。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "两人同时比心，保持五秒。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "和对方一起摆一个胜利姿势拍照。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "学对方走路十秒，但要友好不嘲笑。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "用空气画一个爱心，让对方猜方向。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "给对方递一个身边的小物，并说请查收爱意。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "做一个小小的谢幕动作，感谢对方陪你玩。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "给对方表演十秒钟的慢动作拥抱空气。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "和对方一起数三二一，然后同时微笑。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "把对方当贵宾，做一个迎宾动作。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松行动"
+    },
+    {
+        "text": "给对方拍一张你觉得可爱的照片。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "在备忘录里写一句只给对方看的夸奖。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "给对方发一个最能代表你心情的表情包。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "一起拍一张只露手的合照。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "让对方选一个姿势，你拍一张纪念照。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "用手机录下你对对方的十秒感谢。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "给对方发一条今天限定的甜蜜消息。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "画一个简笔版的对方，不能嫌弃成品。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "在聊天框里打出三个想送给对方的关键词。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "给对方选一首适合今天的背景音乐。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "拍一张你们身边最像恋爱证据的小物。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "给对方制作一个十秒钟口头朋友圈文案。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "把你们今天的状态用一个 emoji 组合表达。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "给对方写一个临时备注名并念出来。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "让对方帮你选一个拍照角度，认真配合。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "在手机里找一张你最喜欢的合照并解释原因。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "给对方发一个语音，只能夸不能调侃。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "用备忘录写下你们下一次约会的标题。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "拍一张你们同时比耶的照片。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "给今天的相处打一个温柔的评分并说明理由。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "甜蜜记录"
+    },
+    {
+        "text": "帮对方拿一样身边需要的小物。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "给对方认真说一句注意休息。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "询问对方现在需不需要喝水或换姿势。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "帮对方把手机屏幕擦干净。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "给对方做一个三秒钟的鼓励手势。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "帮对方检查衣服上有没有小毛絮。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "用最温柔的语气提醒对方放松肩膀。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "给对方说一句今天你已经很棒了。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "帮对方把靠垫或坐姿调整舒服。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "给对方选择一个今晚的放松方式。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "帮对方把头发或帽子稍微整理好。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "对对方说一句你希望TA记住的肯定。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "给对方做一个小小的加油动作。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "为对方安排一个一分钟的休息仪式。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "帮对方把水杯或纸巾放到顺手位置。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "问对方今天有没有一件想被夸的事。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "用三句话安慰假装很累的对方。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "帮对方找一个更舒服的坐姿。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "对对方认真说一句谢谢你陪我。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "给对方一个不接触版的飞吻。",
+        "value": 6,
+        "level": "L1 轻松互动",
+        "category": "轻松照顾"
+    },
+    {
+        "text": "在对方同意下，十指相扣十秒。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，给对方一个五秒拥抱。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，轻轻捏一下对方的手指。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，用手心贴手心比大小。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，帮对方把碎发拨到耳后。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，肩并肩靠近坐一分钟。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，轻轻拍一下对方肩膀表示鼓励。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，牵着对方走五步。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，用手指在对方手心画一个爱心。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，给对方做十秒钟手部放松。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，背靠背坐十秒。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，把你的手放在对方手背上十秒。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，帮对方整理围巾或领口。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，和对方一起做一个双人比心。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，轻轻碰一下对方的指尖。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，给对方一个庆祝式拥抱。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，握住对方的手说一句鼓励。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，和对方额头保持一拳距离对视五秒。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，帮对方按摩手腕十秒。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "在对方同意下，牵手并一起深呼吸三次。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "轻度肢体互动"
+    },
+    {
+        "text": "你们轮流说数字，同时拍手，数到十不能乱。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "一个人闭眼描述房间里一样东西，另一个人猜。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "两人各用一个词接龙夸对方，连续十轮。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "一起用身体摆出一个大大的爱心轮廓。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "对方说三个词，你要编成一句甜甜的话。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "两人同步做三次慢动作点头。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "你比划一个你们的共同回忆，让对方猜。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "两人不说话，用眼神完成石头剪刀布三局。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "你们一起设计一个专属握手动作。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "对方说一个地点，你说出适合那里的约会安排。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "两人同时说出对方最喜欢的一种食物。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "你用动作演出今天的心情，让对方猜。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "两人一起完成一个十秒钟的慢动作谢幕。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "对方给你一个关键词，你说一句情侣广告词。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "你们互相模仿对方开心时的样子。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "一起用手势完成一句无声的我喜欢你。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "两人同时指出房间里最有恋爱感的物品。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "你描述对方的一个优点，让对方猜是哪一个。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "两人轮流说我记得，分享一个共同片段。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "用不超过五个动作演出你们第一次见面的感觉。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "默契合作"
+    },
+    {
+        "text": "让对方给你指定一个可爱姿势并保持十秒。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "用最夸张的方式给对方递水。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "假装给对方拍杂志封面，并口头指导姿势。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "唱一句适合对方的情歌片段，不超过十秒。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "用一本正经的语气向对方卖安利自己。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "模仿一种小动物向对方讨夸奖。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "让对方选择一个 emoji，你用表情演出来。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "用三句话把对方夸到不好意思。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "做一次慢动作转身，然后向对方比心。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "把对方当成偶像，进行十秒钟应援。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "用主持人口吻采访对方今天开不开心。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "让对方指定一个不过分的小动作，你完成。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "用手边物品临时给对方做一个小奖杯。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "对着对方念一段十秒钟的恋爱宣言。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "给对方表演一个害羞版打招呼。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "用五个字表达你现在对对方的感觉。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "让对方指定一句台词，你用甜剧语气说出来。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "对方闭眼时，你用声音制造一个小惊喜。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "对着对方做一个三连拍表情挑战。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "把你们今天的相处演成十秒钟小短剧。",
+        "value": 10,
+        "level": "L2 温柔接触",
+        "category": "可爱挑战"
+    },
+    {
+        "text": "在对方同意下，和对方拥抱十五秒，并说一句感谢。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，牵手对视十秒，不能低头。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，背靠背说出彼此一个优点。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，肩并肩一起安静坐一分钟。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，帮对方轻按肩膀二十秒。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，双手握住对方的手说一句承诺。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，靠近到舒适距离一起拍一张合照。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，牵着手绕房间走一小圈。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，用手心在对方手心写一个字让TA猜。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，完成一次轻轻的额头碰额头三秒。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，给对方一个从背后轻拍肩膀的鼓励。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，和对方一起完成双人拉伸动作。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，牵手并互相说一个今天的感受。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，给对方做半分钟手部按摩。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，和对方贴近但保持舒适距离合照。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，一人闭眼，另一人牵手带走三步。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，双手击掌后停留五秒。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，给对方一个安慰式拥抱。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，两人手臂轻轻挽在一起十秒。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "在对方同意下，面对面坐着同步呼吸五次。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "亲密但不过界"
+    },
+    {
+        "text": "认真说出三个你以后愿意为对方做的小改变。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "给对方讲一个你们未来小家的想象，至少三句话。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "对对方说一段二十秒的感谢，不能开玩笑带过。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "给对方设计一个下次约会计划，并现场说完整。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "说出你希望以后和对方坚持的一个关系规则。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "用一分钟向对方解释你为什么珍惜这段关系。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "给对方念一段临时写的温柔小情书。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "说出一个你以前没好意思表达的喜欢。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "用三个具体例子证明对方对你很重要。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "为对方安排一个今天结束前可以完成的小惊喜。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "说出一个你愿意认真改进的相处习惯。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "把你们最近的一个小矛盾改写成温柔结尾。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "给对方一个只属于本周的专属称号。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "描述一个你期待与对方一起完成的未来画面。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "说出你最想保护对方的一个感受。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "给对方三句不同场景下的安慰台词。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "认真回应对方一个最近没有被充分回应的情绪。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "给对方写下一句未来可以反复使用的暗号。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "用二十秒告诉对方你希望TA怎样依赖你。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "说出你愿意为这段关系保留的一个耐心。",
+        "value": 16,
+        "level": "L3 默契升温",
+        "category": "深度表达"
+    },
+    {
+        "text": "一起制定一个七天情侣小约定，并各自说出承诺。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "在对方同意下，牵手一分钟，轮流说未来一个愿望。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "为对方准备一段三十秒的正式告白，但不要求煽情。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "一起拍一张本局游戏纪念照，并给照片取名。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "写下三条你们的关系守则，并大声读出来。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "为对方设计一次不用花很多钱的理想约会。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "在对方同意下，给对方一个二十秒的安静拥抱。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "一起录一段给一个月后的你们的语音。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "把今天最甜的三个瞬间写进备忘录。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "向对方郑重道谢一次，具体说出原因。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "仪式感挑战"
+    },
+    {
+        "text": "在对方同意下，背靠背坐一分钟，各说一个真心愿望。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    },
+    {
+        "text": "两人一起完成一个专属握手加拥抱的结尾动作。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    },
+    {
+        "text": "共同写下下一次约会的时间、地点和一个小任务。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    },
+    {
+        "text": "在对方同意下，牵手完成一次一分钟深度对视。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    },
+    {
+        "text": "一起把一个小争执改成可执行的解决方案。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    },
+    {
+        "text": "对方说一个近期压力，你给出三句具体支持。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    },
+    {
+        "text": "在对方同意下，肩并肩靠着，安静听完一首歌片段。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    },
+    {
+        "text": "一起设计一个属于你们的和好暗号，并演练一次。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    },
+    {
+        "text": "轮流说出你们关系里最值得坚持的三件事。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    },
+    {
+        "text": "在对方同意下，给对方一个郑重的拥抱，并说谢谢你在。",
+        "value": 24,
+        "level": "L4 高甜挑战",
+        "category": "高甜合作"
+    }
+];
+
+/* =========================================================
+   程序逻辑：移动端美化 + Bug 修复版
+   ========================================================= */
+const $ = (selector) => document.querySelector(selector);
+
+const players = {
+    A: { name: "小王", emoji: "👦" },
+    B: { name: "小韩", emoji: "👧" }
+};
+
+function playerName(id) {
+    return `${players[id].emoji} ${players[id].name}`;
+}
+
+function otherPlayer(id) {
+    return id === "A" ? "B" : "A";
+}
+
+function formatDelta(value) {
+    return `${value > 0 ? "+" : ""}${value}%`;
+}
+
+function initPools() {
+    return {
+        truth: truthPool.map((q, index) => ({ ...q, index, banned: false, bannedBy: null, used: false })),
+        dare: darePool.map((q, index) => ({ ...q, index, banned: false, bannedBy: null, used: false }))
+    };
+}
+
+let allPools = initPools();
+let turn = "A";
+let energy = { A: 0, B: 0 };
+let records = { A: [], B: [] };
+let inviteCount = { A: 2, B: 2 };
+let activeCard = null;
+let toastTimer = null;
+
+const banFlow = [
+    { type: "truth", player: "B" },
+    { type: "truth", player: "A" },
+    { type: "dare", player: "A" },
+    { type: "dare", player: "B" }
+];
+let banStep = 0;
+let banQuota = { truth: 50, dare: 50 };
+
+const pageIds = ["startPage", "banPage", "gamePage", "resultPage"];
+const barA = $("#barA");
+const barB = $("#barB");
+const scoreA = $("#scoreA");
+const scoreB = $("#scoreB");
+const turnText = $("#turn");
+const card = $("#card");
+const cardTitle = $("#cardTitle");
+const cardContent = $("#cardContent");
+const cardMeta = $("#cardMeta");
+const pointBadge = $("#pointBadge");
+const actionRow = $("#actionRow");
+const btnTruth = $("#btnTruth");
+const btnDare = $("#btnDare");
+
+function switchPage(id) {
+    pageIds.forEach(pageId => $("#" + pageId).classList.toggle("active", pageId === id));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showToast(message) {
+    const toast = $("#toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove("show"), 2100);
+}
+
+function setMainButtonsLocked(locked) {
+    btnTruth.disabled = locked;
+    btnDare.disabled = locked;
+}
+
+function updateTurnText(extra = "") {
+    turnText.textContent = `当前回合：${playerName(turn)}${extra}`;
+}
+
+function updateBars() {
+    energy.A = Math.max(0, Math.min(100, energy.A));
+    energy.B = Math.max(0, Math.min(100, energy.B));
+    barA.style.width = energy.A + "%";
+    barB.style.width = energy.B + "%";
+    scoreA.textContent = energy.A + "%";
+    scoreB.textContent = energy.B + "%";
+}
+
+function showBanPage() {
+    banStep = 0;
+    switchPage("banPage");
+    renderBanPage();
+}
+
+function renderBanPage() {
+    const phase = banFlow[banStep];
+    const typeLabel = phase.type === "truth" ? "真心话" : "大冒险";
+    const stageKey = `${banStep}-${phase.type}-${phase.player}`;
+    const pool = allPools[phase.type];
+    const currentSelected = pool.filter(item => item.bannedBy === stageKey).length;
+    const visibleItems = pool.filter(item => !item.banned || item.bannedBy === stageKey);
+
+    $("#banTurn").textContent = `第 ${banStep + 1}/4 轮：${playerName(phase.player)} Ban ${typeLabel}`;
+    $("#banCounter").textContent = `共享剩余额度：${banQuota[phase.type]} / 50；本轮已选：${currentSelected}`;
+
+    const list = $("#banList");
+    list.replaceChildren();
+
+    if (visibleItems.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty-tip";
+        empty.textContent = "这一类题已经没有可 Ban 的题了，可以直接进入下一步。";
+        list.appendChild(empty);
+        return;
+    }
+
+    visibleItems.forEach(item => {
+        const label = document.createElement("label");
+        label.className = "ban-item";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = item.bannedBy === stageKey;
+        checkbox.disabled = item.banned && item.bannedBy !== stageKey;
+        checkbox.addEventListener("change", () => toggleBan(phase.type, item.index, stageKey));
+
+        const span = document.createElement("span");
+        span.className = "ban-text";
+        span.textContent = `[${item.level || "未分级"} · ${item.category || "未分类"} · ${formatDelta(item.value)}] ${item.text}`;
+
+        label.append(checkbox, span);
+        list.appendChild(label);
+    });
+}
+
+function toggleBan(type, index, stageKey) {
+    const item = allPools[type][index];
+    if (!item) return;
+
+    if (item.banned && item.bannedBy === stageKey) {
+        item.banned = false;
+        item.bannedBy = null;
+        banQuota[type]++;
+        renderBanPage();
+        return;
+    }
+
+    if (item.banned) {
+        showToast("这道题已经被上一轮锁定。 ");
+        renderBanPage();
+        return;
+    }
+
+    if (banQuota[type] <= 0) {
+        showToast("这个题型的 Ban 题额度已用完。 ");
+        renderBanPage();
+        return;
+    }
+
+    item.banned = true;
+    item.bannedBy = stageKey;
+    banQuota[type]--;
+    renderBanPage();
+}
+
+function finishBan() {
+    if (banStep < banFlow.length - 1) {
+        banStep++;
+        renderBanPage();
+        return;
+    }
+    startGame();
+}
+
+function startGame() {
+    switchPage("gamePage");
+    activeCard = null;
+    card.classList.remove("show");
+    actionRow.replaceChildren();
+    updateTurnText();
+    updateBars();
+    setMainButtonsLocked(false);
+}
+
+function draw(type) {
+    if (activeCard) {
+        showToast("请先处理当前题目。 ");
+        return;
+    }
+
+    const pool = allPools[type];
+    let available = pool.filter(item => !item.banned && !item.used);
+
+    if (available.length === 0) {
+        pool.forEach(item => {
+            if (!item.banned) item.used = false;
+        });
+        available = pool.filter(item => !item.banned);
+        if (available.length > 0) showToast("这一类题已抽完，已自动重新洗牌。 ");
+    }
+
+    if (available.length === 0) {
+        showToast("这个题型已经没有可用题目了。 ");
+        return;
+    }
+
+    const item = available[Math.floor(Math.random() * available.length)];
+    item.used = true;
+    activeCard = {
+        type,
+        item,
+        owner: turn,
+        responder: turn,
+        invited: false
+    };
+    renderCard();
+}
+
+function renderCard() {
+    if (!activeCard) return;
+    const typeLabel = activeCard.type === "truth" ? "💬 真心话" : "🏃 大冒险";
+    const value = activeCard.item.value;
+    const owner = activeCard.owner;
+    const responder = activeCard.responder;
+
+    cardTitle.textContent = typeLabel;
+    cardContent.textContent = activeCard.item.text;
+    pointBadge.textContent = formatDelta(value);
+    pointBadge.classList.toggle("negative", value < 0);
+
+    const metaPrefix = `${activeCard.item.level || "未分级"} · ${activeCard.item.category || "未分类"}`;
+    if (activeCard.invited) {
+        cardMeta.textContent = `${metaPrefix}｜${playerName(owner)} 邀请 ${playerName(responder)} 代答；能量变化仍归 ${players[owner].name}`;
+        updateTurnText(` · ${players[responder].name}代答中`);
+    } else {
+        cardMeta.textContent = `${metaPrefix}｜${playerName(owner)} 作答；还可邀请对方代答 ${inviteCount[owner]} 次`;
+        updateTurnText(" · 答题中");
+    }
+
+    actionRow.replaceChildren(
+        createActionButton("❌ 拒绝作答 (-5%)", "action-btn btn-refuse", actionRefuse),
+        createActionButton("🔄 重新抽题", "action-btn btn-reroll", actionReroll),
+        createActionButton(`🙋 邀请代答 (剩 ${inviteCount[owner]} 次)`, "action-btn btn-invite", actionInvite, activeCard.invited || inviteCount[owner] <= 0),
+        createActionButton(`✅ 完成作答 (${formatDelta(value)})`, "action-btn btn-done", actionDone)
+    );
+
+    card.classList.add("show");
+    setMainButtonsLocked(true);
+}
+
+function createActionButton(text, className, handler, disabled = false) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = className;
+    button.textContent = text;
+    button.disabled = disabled;
+    button.addEventListener("click", handler);
+    return button;
+}
+
+function addRecord(player, delta, action) {
+    if (!activeCard) return;
+    const helper = activeCard.invited ? `（${players[activeCard.responder].name}代答）` : "";
+    records[player].push({
+        q: activeCard.item.text,
+        v: delta,
+        action: `${action}${helper}`
+    });
+}
+
+function applyEnergy(player, delta) {
+    energy[player] = Math.max(0, Math.min(100, energy[player] + delta));
+    updateBars();
+}
+
+function actionRefuse() {
+    if (!activeCard) return;
+    const owner = activeCard.owner;
+    applyEnergy(owner, -5);
+    addRecord(owner, -5, "拒绝作答");
+    finishTurn(owner);
+}
+
+function actionReroll() {
+    if (!activeCard) return;
+    const owner = activeCard.owner;
+    const type = activeCard.type;
+    addRecord(owner, 0, "重新抽题");
+    activeCard = null;
+    card.classList.remove("show");
+    updateTurnText();
+    setMainButtonsLocked(false);
+    draw(type);
+}
+
+function actionInvite() {
+    if (!activeCard) return;
+    const owner = activeCard.owner;
+    if (activeCard.invited) {
+        showToast("本题已经邀请过对方代答。 ");
+        return;
+    }
+    if (inviteCount[owner] <= 0) {
+        showToast("你的邀请代答次数已经用完。 ");
+        return;
+    }
+    const helper = otherPlayer(owner);
+    inviteCount[owner]--;
+    activeCard.invited = true;
+    activeCard.responder = helper;
+    renderCard();
+    showToast(`${players[helper].name} 代答，本题得分仍归 ${players[owner].name}。`);
+}
+
+function actionDone() {
+    if (!activeCard) return;
+    const owner = activeCard.owner;
+    const value = activeCard.item.value;
+    applyEnergy(owner, value);
+    addRecord(owner, value, "完成作答");
+    finishTurn(owner);
+}
+
+function finishTurn(owner) {
+    const winner = energy.A >= 100 ? "A" : energy.B >= 100 ? "B" : null;
+    activeCard = null;
+    card.classList.remove("show");
+    actionRow.replaceChildren();
+
+    if (winner) {
+        endGame(winner);
+        return;
+    }
+
+    turn = otherPlayer(owner);
+    updateTurnText();
+    setMainButtonsLocked(false);
+}
+
+function endGame(winner) {
+    switchPage("resultPage");
+    $("#winnerText").textContent = `${players[winner].emoji} ${players[winner].name}获胜！`;
+    renderRecord("A", "#recordA");
+    renderRecord("B", "#recordB");
+}
+
+function renderRecord(player, selector) {
+    const dom = $(selector);
+    dom.replaceChildren();
+
+    if (records[player].length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "record-item";
+        empty.textContent = "暂无记录";
+        dom.appendChild(empty);
+        return;
+    }
+
+    records[player].forEach((item, i) => {
+        const wrap = document.createElement("div");
+        wrap.className = "record-item";
+
+        const question = document.createElement("div");
+        question.textContent = `${i + 1}. ${item.q}`;
+
+        const delta = document.createElement("div");
+        delta.className = "record-delta";
+        delta.textContent = `${item.action}｜能量变化：${formatDelta(item.v)}`;
+
+        wrap.append(question, delta);
+        dom.appendChild(wrap);
+    });
+}
+
+function restart() {
+    allPools = initPools();
+    turn = "A";
+    energy = { A: 0, B: 0 };
+    records = { A: [], B: [] };
+    inviteCount = { A: 2, B: 2 };
+    activeCard = null;
+    banStep = 0;
+    banQuota = { truth: 50, dare: 50 };
+    card.classList.remove("show");
+    updateBars();
+    updateTurnText();
+    setMainButtonsLocked(false);
+    switchPage("startPage");
+}
+
+$("#startBanBtn").addEventListener("click", showBanPage);
+$("#startDirectBtn").addEventListener("click", startGame);
+$("#banNextBtn").addEventListener("click", finishBan);
+$("#btnTruth").addEventListener("click", () => draw("truth"));
+$("#btnDare").addEventListener("click", () => draw("dare"));
+$("#restartBtn").addEventListener("click", restart);
+
+updateBars();
+updateTurnText();
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"7939e04a4baf43c8b86a560f74aac60e","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
